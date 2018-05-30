@@ -89,6 +89,16 @@ RSpec.describe Game, type: :model do
     expect(user.balance).to eq prize
   end
 
+  #Задание 61-6
+  it '.current_game_question' do
+    expect(game_w_questions.current_game_question).to eq(game_w_questions.current_game_question)
+  end
+
+  it '.previous_level' do
+    expect(game_w_questions.previous_level).to eq -1
+  end
+
+
   # Задание 61-4
   # группа тестов на проверку статуса игры
   context '.status' do
