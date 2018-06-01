@@ -36,8 +36,8 @@ RSpec.describe GameQuestion, type: :model do
 
 
   # Задание 61-5
-  context "game's answer" do
-    it '.correct_answer_key' do
+  context 'game answer' do
+    it 'correct .correct_answer_key' do
       expect(game_question.correct_answer_key).to eq('b')
     end
   end
