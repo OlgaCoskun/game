@@ -91,11 +91,11 @@ RSpec.describe Game, type: :model do
 
   #Задание 61-6
   it '.current_game_question' do
-    expect(game_w_questions.current_game_question).to eq(game_w_questions.current_game_question)
+    expect(game_w_questions.current_game_question).to be_truthy
   end
 
   it '.previous_level' do
-    expect(game_w_questions.previous_level).to eq -1
+    expect(game_w_questions.previous_level).to eq game_w_questions.current_level - 1
   end
 
 
