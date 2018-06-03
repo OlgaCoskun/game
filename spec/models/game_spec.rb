@@ -10,7 +10,7 @@ require 'support/my_spec_helper'
 # ключевая логика игры и значит работы сайта.
 RSpec.describe Game, type: :model do
   # Пользователь для создания игр
-  let(:user) { FactoryBot.create(:user) }
+  let(:user) {FactoryBot.create(:user)}
 
   # Игра с прописанными игровыми вопросами
   let(:game_w_questions) do
@@ -126,6 +126,18 @@ RSpec.describe Game, type: :model do
 
     it ':money' do
       expect(game_w_questions.status).to eq(:money)
+    end
+  end
+
+  # Задание 61-7
+  # Группа тестов на проверку основных игровых методов
+  context '.answer_current_question!(letter)' do
+    before(:each) do
+      game_w_questions.time_out! || game_w_questions.finished?
+    end
+
+    it 'answer is true' do
+      expect(game_w_questions.answer_current_question!(letter)).to be_truthy && game_w_questions.current_level += 1
     end
   end
 end
