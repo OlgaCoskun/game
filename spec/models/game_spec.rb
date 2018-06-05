@@ -89,13 +89,28 @@ RSpec.describe Game, type: :model do
     expect(user.balance).to eq prize
   end
 
-  #Задание 61-6
-  it '.current_game_question' do
-    expect(game_w_questions.current_game_question).to be_truthy
+  # Задание 61-6
+  # Метод current_game_question возвращает текущий, еще неотвеченный вопрос игры
+  context 'when #current_game_question' do
+    let(:game_w_questions) do
+      FactoryBot.create :game_with_questions
+    end
+
+    it 'return current question' do
+      q = game_w_questions.current_game_question
+      expect(game_w_questions.current_game_question).to eq q
+    end
   end
 
-  it '.previous_level' do
-    expect(game_w_questions.previous_level).to eq game_w_questions.current_level - 1
+  # Метод previous_level возвращает число, равное предыдущему уровню сложности
+  context 'when #previous_level' do
+    let(:game_w_questions) do
+      FactoryBot.create :game_with_questions
+    end
+
+    it 'return number of past level' do
+      expect(game_w_questions.previous_level).to eq game_w_questions.current_level - 1
+    end
   end
 
 
