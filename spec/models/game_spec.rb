@@ -131,13 +131,76 @@ RSpec.describe Game, type: :model do
 
   # Задание 61-7
   # Группа тестов на проверку основных игровых методов
-  context '.answer_current_question!(letter)' do
-    before(:each) do
-      game_w_questions.time_out! || game_w_questions.finished?
+  describe '#answer_current_question!' do
+    # Рассмотрите случаи, когда ответ правильный, неправильный,
+    # последний (на миллион) и когда ответ дан после истечения времени.
+    context 'when the answer is right' do
+      let(:game_w_questions) do # let применяется для каждого it
+        FactoryBot.create :game_with_questions,
+                          current_level: 5
+      end
+
+      # - Вернуть true
+      it 'return true' do
+        result = game_w_questions.answer_current_question!('d')
+        expect(result).to eq true
+      end
+
+      # - Проверить, что игра продолжилась (in_progress)
+      it 'saves game status' do
+        game_w_questions.answer_current_question!('d')
+        expect(game_w_questions.status).to eq :in_progress
+      end
+
+      # - Проверить, что уровень переключился (+1)
+      it 'increments game level' do
+        game_w_questions.answer_current_question!('d')
+        expect(game_w_questions.current_level).to eq 6
+      end
     end
 
-    it 'answer is true' do
-      expect(game_w_questions.answer_current_question!(letter)).to be_truthy && game_w_questions.current_level += 1
+    context 'when the answer is wrong' do
+      let(:game_w_questions) do # let применяется для каждого it
+        FactoryBot.create :game_with_questions,
+                          current_level: 5
+      end
+
+      # вернули false
+      it 'return false' do
+        result = game_w_questions.answer_current_question!('a')
+        expect(result).to eq false
+      end
+
+      # статус игры стал :fail
+      it 'fails the game' do
+        game_w_questions.answer_current_question!('a')
+        expect(game_w_questions.status).to eq :fail
+      end
+
+      # прописали несгораемую сумму в prize
+      it 'updates prize' do
+        game_w_questions.answer_current_question!('a')
+        expect(game_w_questions.prize).to eq 1_000
+      end
+
+      # остался тот же current_level
+      it 'saves game level' do
+        game_w_questions.answer_current_question!('a')
+        expect(game_w_questions.current_level).to eq 5
+      end
+
+      # вернули true для последнего ответа
+      it 'returns true for last answer' do
+        15.times do # Подсовываем правильный ответ d 15 раз, чтобы накрутить до 1_000_000 сумму
+          game_w_questions.answer_current_question!('d')
+        end
+        expect(game_w_questions.prize).to eq 1_000_000
+      end
+
+      # вернули false когда время на ответ истекло. Здесь ответ передавать не будем, как бы пользователь не ответил.
+      it 'returns false for timed out answer' do
+        expect(game_w_questions.is_failed).to be false
+      end
     end
   end
 end
