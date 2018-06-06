@@ -37,7 +37,7 @@ RSpec.describe GameQuestion, type: :model do
 
   # Задание 61-5
   context 'when #correct_answer_key' do
-    it 'return true' do
+    it 'return true answer' do
       expect(game_question.correct_answer_key).to eq('b')
     end
   end
