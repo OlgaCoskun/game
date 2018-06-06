@@ -12,6 +12,8 @@ gem 'twitter-bootstrap-rails'
 gem 'font-awesome-rails'
 gem 'russian'
 
+gem "pry",      :group => :pry
+
 group :development, :test do
   gem 'sqlite3'
   gem 'byebug'
