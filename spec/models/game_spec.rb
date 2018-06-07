@@ -96,9 +96,9 @@ RSpec.describe Game, type: :model do
       FactoryBot.create :game_with_questions
     end
 
-    # it 'return current question' do
-    #   expect(game_w_questions.current_game_question.level).to eq
-    # end
+    it 'ckeck current question' do
+      expect(game_w_questions.current_game_question).to eq game_w_questions.game_questions[0]
+    end
   end
 
   # Метод previous_level возвращает число, равное предыдущему уровню сложности
