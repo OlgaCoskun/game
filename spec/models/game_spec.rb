@@ -91,18 +91,18 @@ RSpec.describe Game, type: :model do
 
   # Задание 61-6
   # Метод current_game_question возвращает текущий, еще неотвеченный вопрос игры
-  context 'when #current_game_question' do
+  context '#current_game_question' do
     let(:game_w_questions) do
       FactoryBot.create :game_with_questions
     end
 
     # it 'return current question' do
-    #   expect(game_w_questions.current_game_question).to eq
+    #   expect(game_w_questions.current_game_question.level).to eq
     # end
   end
 
   # Метод previous_level возвращает число, равное предыдущему уровню сложности
-  context 'when #previous_level' do
+  context '#previous_level' do
     let(:game_w_questions) do
       FactoryBot.create :game_with_questions
     end
