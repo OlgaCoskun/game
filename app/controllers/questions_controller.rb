@@ -52,7 +52,6 @@ class QuestionsController < ApplicationController
 
   # Загрузка массива вопросов в базе
   # Для скорости оборачиваем все в одну транзакцию
-  # см. https://www.coffeepowered.net/2009/01/23/mass-inserting-data-in-rails-without-killing-your-performance/
   def create_questions_from_lines(lines, level)
     failed = 0
     ActiveRecord::Base.transaction do

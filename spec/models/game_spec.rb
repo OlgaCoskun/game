@@ -96,7 +96,7 @@ RSpec.describe Game, type: :model do
       FactoryBot.create :game_with_questions
     end
 
-    it 'ckeck current question' do
+    it 'check current question' do
       expect(game_w_questions.current_game_question).to eq game_w_questions.game_questions[0]
     end
   end

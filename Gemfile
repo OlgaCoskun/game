@@ -12,7 +12,7 @@ gem 'twitter-bootstrap-rails'
 gem 'font-awesome-rails'
 gem 'russian'
 
-gem "pry",      :group => :pry
+gem "pry",      :group => :development
 
 group :development, :test do
   gem 'sqlite3'
