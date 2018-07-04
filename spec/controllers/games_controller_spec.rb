@@ -133,5 +133,16 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
     end
+
+    # проверяет не правильный ответ игрока
+    it 'wrong answer made by user' do
+      game_w_questions.update_attribute(:current_level, 2)
+
+      put :answer, id: game_w_questions.id, params: {answer: 'a'}
+
+      expect(response.status).not_to eq(200) # статус не 200 ОК
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:alert]).to be # во flash должен быть прописана ошибка
+    end
   end
 end
