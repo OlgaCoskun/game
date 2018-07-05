@@ -14,33 +14,33 @@ RSpec.describe GamesController, type: :controller do
     it 'kick from #show' do
       get :show, id: game_w_questions.id
 
-      expect(response.status).not_to eq 200
+      expect(response.status).to eq 302
       expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      expect(flash[:alert]).to eq("Вам необходимо войти в систему или зарегистрироваться.")
     end
 
     it 'kick from #create' do
       post :create
 
-      expect(response.status).not_to eq 200
+      expect(response.status).to eq 302
       expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      expect(flash[:alert]).to eq("Вам необходимо войти в систему или зарегистрироваться.")
     end
 
     it 'kick from #answer' do
       put :answer, id: game_w_questions, params: {letter: 'a'}
 
-      expect(response.status).to_not eq(200)
+      expect(response.status).to eq(302)
       expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      expect(flash[:alert]).to eq("Вам необходимо войти в систему или зарегистрироваться.")
     end
 
     it 'kick from #take_money' do
       put :take_money, id: game_w_questions.id
 
-      expect(response.status).not_to eq(200)
+      expect(response.status).to eq(302)
       expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      expect(flash[:alert]).to eq("Вам необходимо войти в систему или зарегистрироваться.")
     end
   end
 
