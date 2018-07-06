@@ -150,6 +150,45 @@ class Game < ActiveRecord::Base
   # :won — игра выиграна (все 15 вопросов покорены)
   # :money — игра завершена, игрок забрал деньги
   # :in_progress — игра еще идет
+
+  # todo: дорогой ученик!
+  # Код метода ниже можно сократиь в 3 раза с помощью возможностей Ruby и Rails,
+  # подумайте как и реализуйте. Помните о безопасности и входных данных!
+  #
+  # Вариант решения вы найдете в комментарии в конце файла, отвечающего за настройки
+  # хранения сессий вашего приложения. Вот такой вот вам ребус :)
+
+  # Создает варианты подсказок для текущего игрового вопроса.
+  # Возвращает true, если подсказка применилась успешно,
+  # false если подсказка уже заюзана.
+  #
+  # help_type = :fifty_fifty | :audience_help | :friend_call
+  def use_help(help_type)
+    case help_type
+    when :fifty_fifty
+      unless fifty_fifty_used
+        # ActiveRecord метод toggle! переключает булевое поле сразу в базе
+        toggle!(:fifty_fifty_used)
+        current_game_question.add_fifty_fifty
+        return true
+      end
+    when :audience_help
+      unless audience_help_used
+        toggle!(:audience_help_used)
+        current_game_question.add_audience_help
+        return true
+      end
+    when :friend_call
+      unless friend_call_used
+        toggle!(:friend_call_used)
+        current_game_question.add_friend_call
+        return true
+      end
+    end
+
+    false
+  end
+
   def status
     return :in_progress unless finished?
 
