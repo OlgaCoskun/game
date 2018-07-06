@@ -1,53 +1,45 @@
 # Основной игровой контроллер
 # Создает новую игру, обновляет статус игры по ответам юзера, выдает подсказки
+#
 class GamesController < ApplicationController
   before_action :authenticate_user!
 
-  # Проверка нет ли у залогиненного юзера начатой игры
+  # проверка нет ли у залогиненного юзера начатой игры
   before_action :goto_game_in_progress!, only: [:create]
 
-  # Загружаем игру из базы для текущего юзера
+  # загружаем игру из базы для текущего юзера
   before_action :set_game, except: [:create]
 
-  # Проверка — если игра завершена, отправляем юзера на его профиль, где он
-  # может увидеть статистику сыгранных игр.
+  # проверка - если игра завершена, отправляем юзера на его профиль,
+  # где он может увидеть статистику сыгранных игр
   before_action :redirect_from_finished_game!, except: [:create]
 
   def show
     @game_question = @game.current_game_question
   end
 
-  # Действие create создает новую игру и отправляет на действие show (основной
-  # игровой экран) в случае успеха.
+  # создаем новую игру и отправляем на экшен #show в случае успеха
   def create
     begin
-      # Создаем игру для залогиненного юзера
+      # создаем игру для залогиненного юзера
       @game = Game.create_game_for_user!(current_user)
 
-      # Отправляемся на страницу игры
-      redirect_to game_path(@game), notice: I18n.t(
-        'controllers.games.game_created',
-        created_at: @game.created_at
-      )
-    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => ex
-      # Если ошибка создания игры
-      Rails.logger.error("Error creating game for user #{current_user.id}, " \
-                         "msg = #{ex}. #{ex.backtrace}")
-
-      # Отправляемся назад с алертом
+      # отправляемся на страницу игры
+      redirect_to game_path(@game), notice: I18n.t('controllers.games.game_created', created_at: @game.created_at)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => ex # если ошибка создания игры
+      Rails.logger.error("Error creating game for user #{current_user.id}, msg = #{ex}. #{ex.backtrace}")
+      # отправляемся назад с алертом
       redirect_to :back, alert: I18n.t('controllers.games.game_not_created')
     end
   end
 
-  # Действие answer принимает ответ на вопрос, единственный обязательный
-  # параметр — params[:letter] — буква, которую выбрал игрок.
+  # params[:letter] - единственный параметр
   def answer
-    # Выясняем у игры, правильно ли оветили
+    # выясняем, правильно ли оветили
     @answer_is_correct = @game.answer_current_question!(params[:letter])
     @game_question = @game.current_game_question
 
     unless @answer_is_correct
-      # Если ответили неправильно, отправляем юзера на профиль с сообщением
       flash[:alert] = I18n.t(
         'controllers.games.bad_answer',
         answer: @game_question.correct_answer,
@@ -55,30 +47,33 @@ class GamesController < ApplicationController
       )
     end
 
-    if @game.finished?
-      # Если игра закончилась, отправялем юзера на свой профиль
-      redirect_to user_path(current_user)
-    else
-      # Иначе, обратно на экран игры
-      redirect_to game_path(@game)
+    # Выбираем поведение в зависимости от формата запроса
+    respond_to do |format|
+      # Если это html-запрос, по-старинке редиректим пользователя в зависимости от ситуации
+      format.html do
+        if @answer_is_correct && !@game.finished?
+          redirect_to game_path(@game)
+        else
+          redirect_to user_path(current_user)
+        end
+      end
+
+      # Если это js-запрос, то ничего не делаем и контролл попытается отрисовать шаблон
+      # <controller>/<action>.<format>.erb (в нашем случае games/answer.js.erb)
+      format.js {}
     end
+
   end
 
-  # Действие take_money вызывается из шаблона, когда пользователь берет кнопку
-  # «Взять деньги». Параметров нет, т.к. вся необходимая информация есть в базе.
+  # вызывается из вьюхи без параметров
   def take_money
-    # Заканчиваем игру
     @game.take_money!
-
-    # Отправялем пользователя на профиль с сообщение о выигрыше
-    redirect_to user_path(current_user), flash: {
-      warning: I18n.t(
-        'controllers.games.game_finished',
-        prize: view_context.number_to_currency(@game.prize)
-      )
-    }
+    redirect_to user_path(current_user),
+                flash: {warning: I18n.t('controllers.games.game_finished', prize: view_context.number_to_currency(@game.prize))}
   end
 
+  # запрашиваем помощь в текущем вопросе
+  # params[:help_type]
   def help
     # используем помощь в игре и по результату задаем сообщение юзеру
     msg = if @game.use_help(params[:help_type].to_sym)
@@ -90,36 +85,22 @@ class GamesController < ApplicationController
     redirect_to game_path(@game), msg
   end
 
+
   private
 
   def redirect_from_finished_game!
-    if @game.finished?
-      redirect_to user_path(current_user), alert: I18n.t(
-        'controllers.games.game_closed',
-        game_id: @game.id
-      )
-    end
+    redirect_to user_path(current_user), alert: I18n.t('controllers.games.game_closed', game_id: @game.id) if @game.finished?
   end
 
   def goto_game_in_progress!
-    # Вот нам и пригодился наш scope in_progress из модели Game
+    # вот нам и пригодился наш scope из модели Game
     game_in_progress = current_user.games.in_progress.first
-
-    unless game_in_progress.blank?
-      redirect_to game_path(game_in_progress), alert: I18n.t(
-        'controllers.games.game_not_finished'
-      )
-    end
+    redirect_to game_path(game_in_progress), alert: I18n.t('controllers.games.game_not_finished') unless game_in_progress.blank?
   end
 
   def set_game
     @game = current_user.games.find_by(id: params[:id])
-
-    if @game.blank?
-      # Если у current_user нет игры - посылаем
-      redirect_to root_path, alert: I18n.t(
-        'controllers.games.not_your_game'
-      )
-    end
+    # если у current_user нет игры - посылаем
+    redirect_to root_path, alert: I18n.t('controllers.games.not_your_game') if @game.blank?
   end
 end
