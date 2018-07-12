@@ -22,6 +22,14 @@ group :development, :test do
   gem 'shoulda-matchers'
 end
 
+# Гемы для интегрального тестирования
+# capybara - эмулирует действия пользователя в rspec
+# launchy помогает смотреть страницы в браузере
+group :test do
+  gem 'capybara'
+  gem 'launchy'
+end
+
 group :production do
   # гем, улучшающий вывод логов на Heroku
   # https://devcenter.heroku.com/articles/getting-started-with-rails4#heroku-gems
