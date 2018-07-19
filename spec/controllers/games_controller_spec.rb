@@ -172,11 +172,20 @@ RSpec.describe GamesController, type: :controller do
       # посылаем запрос в контроллер с нужным типом
       put :help, id: game_w_questions.id, help_type: :fifty_fifty
       game = assigns(:game)
+    end
 
-      # проверяем, что игра не закончилась и что подсказка 50/50 не была еще использована
-      expect(game.finished?).to be_falsey
-      expect(game.fifty_fifty_used).to be_truthy
-      expect(response).to redirect_to(game_path(game))
+    # подсказка 50/50 не была еще использована
+    it 'fifty_fifty is available' do
+      # Проверяем, что поле 50/50 is false, так как подсказка еще не использовалась, а значит доступна
+      expect(game_w_questions.fifty_fifty_used).to be_falsey
+
+      # Вытаскиваем из контроллера поле @game
+      game = assigns(:game)
+      expect(game).to be_nil
+
+      # проверяем правильный код возврата
+      expect(response.status).to eq(200) # статус 200
+
     end
   end
 end
