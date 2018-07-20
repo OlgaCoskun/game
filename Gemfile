@@ -28,6 +28,7 @@ end
 group :test do
   gem 'capybara'
   gem 'launchy'
+  gem 'pry-byebug'
 end
 
 group :production do

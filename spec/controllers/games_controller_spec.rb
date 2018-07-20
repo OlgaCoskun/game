@@ -180,11 +180,13 @@ RSpec.describe GamesController, type: :controller do
       expect(game_w_questions.fifty_fifty_used).to be_falsey
 
       # Вытаскиваем из контроллера поле @game
+      get :show, id: game_w_questions.id
+
       game = assigns(:game)
-      expect(game).to be_nil
+      expect((game).fifty_fifty_used).to be_falsey
 
       # проверяем правильный код возврата
-      expect(response.status).to eq(200) # статус 200
+      expect(response.status).to eq(200)
 
     end
   end
