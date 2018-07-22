@@ -1,5 +1,4 @@
-#  (c) goodprogrammer.ru
-#
+
 # Модельи игры — создается когда пользователь начинает новую игру. Хранит и
 # обновляет состояние игры и отвечает за игровой процесс.
 class Game < ActiveRecord::Base
@@ -10,7 +9,7 @@ class Game < ActiveRecord::Base
   FIREPROOF_LEVELS = [4, 9, 14].freeze
   TIME_LIMIT = 35.minutes
 
-  # У игры есть игрок — пользователь, который начал эту игру
+  # У игры есть игрок — пользователь, который начал эту игру(((((())))))
   belongs_to :user
 
   # Массив игровых вопросов для этой игры. 15 вопросов для 15-ти уровней, в
@@ -143,6 +142,7 @@ class Game < ActiveRecord::Base
     finish_game!(previous_level > -1 ? PRIZES[previous_level] : 0, false)
   end
 
+  ###
   # Результат игры status, возвращает, одно из:
   #
   # :fail — игра проиграна из-за неверного вопроса
