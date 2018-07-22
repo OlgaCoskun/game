@@ -28,6 +28,7 @@ class Game < ActiveRecord::Base
     greater_than_or_equal_to: 0, less_than_or_equal_to: PRIZES.last
   }
 
+  #
   # Scope — это метод класса, который возвращает из базы подмножество игр,
   # удовлетворяющих условию. В нашем случае, у которых поле finished_at пусто.
   #
