@@ -186,6 +186,12 @@ RSpec.describe GamesController, type: :controller do
 
       # проверяем правильный код возврата
       expect(response.status).to eq(302)
+
+      # проверяем на правильный адрес редирект - redirect_to game_path(@game), msg
+      expect(response).to redirect_to(game_path(game))
+
+      # проверяем на флеш сообщение
+      expect(flash[:info]).to eq("Вы использовали подсказку")
     end
   end
 end
