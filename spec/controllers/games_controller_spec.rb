@@ -163,17 +163,6 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(game_path(game))
     end
 
-    # тест на отработку " подсказки 50/50"
-    it 'uses fifty_fifty' do
-      # сперва проверяем что в подсказках текущего вопроса пусто
-      expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
-      expect(game_w_questions.audience_help_used).to be_falsey
-
-      # посылаем запрос в контроллер с нужным типом
-      put :help, id: game_w_questions.id, help_type: :fifty_fifty
-      game = assigns(:game)
-    end
-
     # подсказка 50/50 не была еще использована
     it 'fifty_fifty is available' do
       # Проверяем, что поле 50/50 is false, так как подсказка еще не использовалась, а значит доступна
