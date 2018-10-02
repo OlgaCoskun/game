@@ -1,0 +1,40 @@
+ru:
+  game_help:
+    friends:
+      - "Zhora"
+      - "Boris Burda"
+      - "Anatoly Vasserman"
+      - "Fedor Dvinyatin"
+      - "Grandma Tanya"
+      - "Alexander Druz"
+      - "Sereza"
+    friend_call: "%{name} believes that this is the answer: %{variant}"
+
+  controllers:
+    games:
+      not_your_game: "This is not your game!"
+      game_created: "The game started at %{created_at}, time has started"
+      game_not_created: "Game not created :( Contact the admin"
+      help_used: "You used a hint"
+      help_not_used: "The hint has already been used!"
+      game_not_finished: "You have not completed the game"
+      game_finished: "The game is over, you won %{prize}. Play again!"
+      game_closed: "Game %{game_id} is over and no longer available, start a new one!"
+      good_answer: "The correct answer, well done :)"
+      bad_answer: "The correct answer is: %{answer}. The game is over, your prize is %{prize}"
+
+# статусы игры
+  game_statuses:
+    fail: 'Loss'
+    timeout: 'Time'
+    money: 'Money'
+    won: 'Victory'
+    in_progress: 'In progress'
+
+  number:
+    currency:
+      format:
+        # Формат отображения валюты и обозначение самой валюты
+        unit: "₽"
+        precision: 0
+
